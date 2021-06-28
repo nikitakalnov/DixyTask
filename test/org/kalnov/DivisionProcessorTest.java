@@ -38,6 +38,6 @@ class DivisionProcessorTest {
     String[] result = processor.sort();
 
     // Asserting
-    assertArrayEquals(result, sortedDivisions);
+    assertArrayEquals(sortedDivisions, result);
   }
 }
