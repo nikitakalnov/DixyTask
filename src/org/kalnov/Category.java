@@ -54,6 +54,6 @@ public class Category {
 
   @Override
   public int hashCode() {
-    return name.hashCode() + Objects.hashCode(this.parent);
+    return Objects.hash(name.hashCode(), Objects.hashCode(this.parent));
   }
 }
