@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 public class DivisionProcessor {
 
   private String[] originalDivisions;
-  private Set<Category> divisions = new HashSet<>();
 
   public DivisionProcessor(String[] divisions) {
     setDivisions(divisions);
@@ -17,9 +16,8 @@ public class DivisionProcessor {
     this.originalDivisions = divisions;
   }
 
-
   public String[] sort() {
-    initDivisions(originalDivisions);
+    Set<Category> divisions = parseDivisions(originalDivisions);
     List<String> sorted = new LinkedList<>();
 
     // Find top level divisions
@@ -42,13 +40,14 @@ public class DivisionProcessor {
             });
   }
 
-  protected void initDivisions(String[] originalDivisions) {
+  public static Set<Category> parseDivisions(String[] originalDivisions) {
+    Set<Category> divisions = new HashSet<>();
 
     for(String division : originalDivisions) {
       String[] divisionsWithParents = division.split(Pattern.quote(Category.DELIMITER));
       Category parent = null;
       for(String name : divisionsWithParents) {
-        Category div = getOrCreate(name, parent);
+        Category div = getOrCreate(name, parent, divisions);
         if(Objects.nonNull(parent))
           parent.addChild(div);
 
@@ -56,9 +55,11 @@ public class DivisionProcessor {
         divisions.add(parent);
       }
     }
+
+    return divisions;
   }
 
-  protected Category getOrCreate(String name, Category parent) {
+  protected static Category getOrCreate(String name, Category parent, Set<Category> divisions) {
     Category category = new Category(name, parent);
     for(Category c : divisions)
       if(c.equals(category))
